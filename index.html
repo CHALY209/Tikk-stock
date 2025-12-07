@@ -1,0 +1,2639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLBB Stock Marketplace</title>
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0idmFyKC0tcHJpbWFyeSkiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+TUw8L3RleHQ+Cjwvc3ZnPg=="
+        type="image/svg+xml">
+
+    <!-- Google Fonts: Poppins for general text, Montserrat for headings (optional but good for consistency) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Base Styles & Variables */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+         :root {
+            --primary: #ff6b35;
+            /* Orange-red */
+            --secondary: #1a1a2e;
+            /* Dark blue-purple */
+            --accent: #00adb5;
+            /* Teal */
+            --dark: #16213e;
+            /* Even darker blue-purple */
+            --light: #f8f9fa;
+            /* Off-white */
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --gray: #6c757d;
+            --bg-gradient-start: #0f0c29;
+            --bg-gradient-mid: #302b63;
+            --bg-gradient-end: #24243e;
+            --card-bg: rgba(26, 26, 46, 0.8);
+            --modal-bg: var(--secondary);
+            --header-bg: rgba(26, 26, 46, 0.95);
+            --footer-bg: rgba(10, 15, 30, 0.95);
+            --text-color-light: #f1f1f1;
+            --text-color-dim: #b8b8d1;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(255, 255, 255, 0.1);
+            --box-shadow-light: 0 5px 15px rgba(255, 107, 53, 0.3);
+            --box-shadow-dark: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
+            color: var(--text-color-light);
+            min-height: 100vh;
+            background-attachment: fixed;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .container {
+            max-width: 1300px;
+            /* Slightly reduced for better content density */
+            margin: 0 auto;
+            padding: 0 25px;
+            /* Increased padding */
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        button,
+        input[type="submit"] {
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+        /* Header Styles */
+        
+        header {
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            padding: 18px 0;
+            /* Increased padding */
+            border-bottom: 3px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            /* Slightly reduced gap */
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 48px;
+            /* Slightly larger */
+            height: 48px;
+            /* Slightly larger */
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            border-radius: 12px;
+            /* More rounded */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            /* Bolder */
+            font-size: 22px;
+            /* Larger font */
+            color: white;
+        }
+        
+        .logo h1 {
+            font-family: 'Montserrat', sans-serif;
+            /* Use Montserrat for headings */
+            font-size: 28px;
+            /* Larger font */
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 20px;
+            /* Increased gap */
+            align-items: center;
+        }
+        
+        .telegram-contact,
+        .admin-login-btn {
+            padding: 12px 25px;
+            /* Increased padding */
+            border-radius: 30px;
+            /* More rounded */
+            font-weight: 600;
+            /* Slightly bolder */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            /* Increased gap */
+            transition: all 0.3s ease;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            font-size: 15px;
+        }
+        
+        .telegram-contact {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .telegram-contact:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+            /* More pronounced hover effect */
+            box-shadow: var(--box-shadow-light);
+        }
+        
+        .admin-login-btn {
+            background: var(--warning);
+            color: var(--dark);
+        }
+        
+        .admin-login-btn:hover {
+            background: #e0a800;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+        }
+        /* Hero Section */
+        
+        .hero {
+            padding: 80px 0;
+            /* More padding */
+            text-align: center;
+            background: rgba(22, 33, 62, 0.6);
+            /* Slightly darker */
+            margin: 30px auto;
+            /* Increased margin */
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow-dark);
+        }
+        
+        .hero h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 48px;
+            /* Larger font */
+            margin-bottom: 20px;
+            /* Increased margin */
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 19px;
+            /* Larger font */
+            color: var(--text-color-dim);
+            max-width: 700px;
+            /* Wider text */
+            margin: 0 auto 30px;
+            /* Increased margin */
+        }
+        /* Stock Section */
+        
+        .stock-section {
+            padding: 60px 0;
+            /* More padding */
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            /* More margin */
+        }
+        
+        .section-title h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 38px;
+            /* Larger font */
+            color: var(--text-color-light);
+            margin-bottom: 12px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        
+        .section-title p {
+            color: var(--text-color-dim);
+            font-size: 17px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .stock-filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            /* Increased gap */
+            margin-bottom: 40px;
+            /* Increased margin */
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 10px 22px;
+            /* More padding */
+            background: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            /* Slightly stronger border */
+            color: var(--text-color-light);
+            border-radius: 25px;
+            /* More rounded */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 15px;
+        }
+        
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--box-shadow-light);
+        }
+        
+        .stock-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            /* Adjusted minmax for better responsiveness */
+            gap: 30px;
+            /* Increased gap */
+            margin-bottom: 60px;
+        }
+        
+        .stock-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            /* More rounded */
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            /* For badge positioning */
+            animation: fadeIn 0.5s ease-out;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stock-card:hover {
+            transform: translateY(-8px);
+            /* More pronounced hover */
+            border-color: var(--primary);
+            box-shadow: var(--box-shadow-dark);
+        }
+        
+        .card-badge {
+            position: absolute;
+            top: 20px;
+            /* Increased margin */
+            right: 20px;
+            /* Increased margin */
+            padding: 6px 16px;
+            /* More padding */
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+            font-size: 13px;
+            /* Slightly larger */
+            font-weight: 700;
+            /* Bolder */
+            z-index: 2;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+        }
+        
+        .card-image {
+            height: 220px;
+            /* Increased height */
+            width: 100%;
+            background: linear-gradient(45deg, var(--dark), #0f3460);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .stock-card:hover .card-image img {
+            transform: scale(1.08);
+            /* More pronounced zoom */
+        }
+        
+        .card-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            /* Taller gradient */
+            background: linear-gradient(to top, rgba(26, 26, 46, 0.95), transparent);
+            /* Stronger gradient */
+        }
+        
+        .card-content {
+            padding: 25px;
+            /* Increased padding */
+            flex-grow: 1;
+            /* Allows card content to grow */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            /* Larger font */
+            margin-bottom: 12px;
+            color: white;
+            line-height: 1.3;
+        }
+        
+        .card-description {
+            color: var(--text-color-dim);
+            margin-bottom: 18px;
+            /* Increased margin */
+            font-size: 15px;
+            /* Slightly larger */
+            line-height: 1.6;
+            height: 60px;
+            /* Ensures consistent display */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            /* Increased margin */
+            padding-bottom: 18px;
+            /* Increased padding */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            /* Stronger border */
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .detail-item {
+            text-align: center;
+            flex: 1;
+            min-width: 80px;
+            /* Ensure items don't compress too much */
+        }
+        
+        .detail-label {
+            font-size: 12px;
+            /* Slightly larger */
+            color: #8a8aa3;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        
+        .detail-value {
+            font-size: 17px;
+            /* Larger value font */
+            font-weight: 600;
+            /* Bolder */
+            color: var(--accent);
+        }
+        
+        .card-price {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            /* Larger price font */
+            font-weight: 700;
+            /* Bolder */
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 20px;
+            /* Increased margin */
+            letter-spacing: 0.5px;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 12px;
+            /* Increased gap */
+            margin-top: auto;
+            /* Pushes buttons to the bottom */
+        }
+        
+        .btn-buy,
+        .btn-details {
+            flex: 1;
+            padding: 12px 15px;
+            /* More padding */
+            border-radius: 10px;
+            /* More rounded */
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-buy {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-buy:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-details {
+            background: transparent;
+            color: var(--text-color-light);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        
+        .btn-details:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(0, 173, 181, 0.1);
+            transform: translateY(-2px);
+        }
+        /* Contact Section */
+        
+        .contact-section {
+            padding: 80px 0;
+            /* More padding */
+            background: rgba(22, 33, 62, 0.6);
+            border-radius: 20px;
+            margin: 50px auto;
+            /* Increased margin */
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow-dark);
+            max-width: 900px;
+        }
+        
+        .contact-info {
+            text-align: center;
+            max-width: 650px;
+            /* Wider content */
+            margin: 0 auto;
+        }
+        
+        .contact-icon {
+            width: 80px;
+            /* Larger icon */
+            height: 80px;
+            /* Larger icon */
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            /* More margin */
+            font-size: 35px;
+            /* Larger icon */
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 173, 181, 0.4);
+        }
+        
+        .contact-info h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            /* Larger font */
+            margin-bottom: 18px;
+            color: white;
+        }
+        
+        .contact-info p {
+            font-size: 17px;
+            color: var(--text-color-dim);
+            margin-bottom: 30px;
+            /* More margin */
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .telegram-btn-large {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            /* Increased gap */
+            background: #0088cc;
+            /* Telegram blue */
+            color: white;
+            text-decoration: none;
+            padding: 18px 40px;
+            /* More padding */
+            border-radius: 35px;
+            /* More rounded */
+            font-size: 19px;
+            /* Larger font */
+            font-weight: 700;
+            /* Bolder */
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.3);
+        }
+        
+        .telegram-btn-large:hover {
+            background: #0077b5;
+            transform: translateY(-4px);
+            /* More pronounced hover */
+            box-shadow: 0 12px 25px rgba(0, 136, 204, 0.4);
+        }
+        /* Footer */
+        
+        footer {
+            background: var(--footer-bg);
+            padding: 40px 0;
+            /* More padding */
+            margin-top: 80px;
+            /* More margin */
+            border-top: 3px solid var(--primary);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .footer-content {
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        .footer-content .logo {
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            /* Increased gap */
+            margin: 30px 0;
+            /* Increased margin */
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--text-color-dim);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 16px;
+            padding: 5px 10px;
+            /* Add padding for better hover area */
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .copyright {
+            color: #8a8aa3;
+            font-size: 14px;
+            margin-top: 30px;
+            /* Increased margin */
+            line-height: 1.8;
+        }
+        /* Admin Panel Styles */
+        
+        .admin-panel {
+            display: none;
+            padding: 50px 0;
+            /* More padding */
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            /* More margin */
+            padding-bottom: 25px;
+            border-bottom: 2px solid var(--primary);
+            flex-wrap: wrap;
+            /* Allow wrapping on small screens */
+            gap: 20px;
+            /* Gap for wrapped items */
+        }
+        
+        .admin-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            color: var(--primary);
+        }
+        
+        .admin-title i {
+            font-size: 32px;
+            color: var(--accent);
+        }
+        
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            padding: 12px 28px;
+            /* More padding */
+            border-radius: 30px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-size: 15px;
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+        }
+        
+        .admin-actions {
+            display: flex;
+            gap: 20px;
+            /* Increased gap */
+            margin-bottom: 40px;
+            /* More margin */
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .admin-btn {
+            padding: 14px 28px;
+            /* More padding */
+            background: var(--accent);
+            color: white;
+            border-radius: 30px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            box-shadow: 0 2px 8px rgba(0, 173, 181, 0.2);
+        }
+        
+        .admin-btn:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--box-shadow-light);
+        }
+        
+        .admin-btn.delete {
+            background: var(--danger);
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
+        }
+        
+        .admin-btn.delete:hover {
+            background: #c82333;
+        }
+        /* Form Overlays & Containers (Modals) */
+        
+        .form-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            /* Slightly darker overlay */
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            /* Add padding for small screens */
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            /* Start hidden for animation */
+        }
+        
+        .form-overlay.active {
+            opacity: 1;
+        }
+        
+        .form-container,
+        .login-container {
+            background: var(--modal-bg);
+            border-radius: 20px;
+            width: 95%;
+            /* Wider on small screens */
+            max-width: 550px;
+            /* Slightly wider */
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 35px;
+            /* More padding */
+            position: relative;
+            border: 2px solid var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transform: translateY(-20px);
+            /* Start slightly up for animation */
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        
+        .form-overlay.active .form-container,
+        .form-overlay.active .login-container {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .form-container h3,
+        .login-container h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 26px;
+            /* Larger font */
+            margin-bottom: 30px;
+            /* More margin */
+            color: var(--primary);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .form-container h3 i,
+        .login-container h3 i {
+            color: var(--accent);
+            font-size: 28px;
+        }
+        
+        .form-group {
+            margin-bottom: 22px;
+            /* More margin */
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            /* More margin */
+            color: var(--text-color-light);
+            font-weight: 500;
+            font-size: 15px;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 14px;
+            /* More padding */
+            background: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
+            /* More rounded */
+            color: var(--text-color-light);
+            font-size: 15px;
+            appearance: none;
+            /* Remove default select styling */
+            -webkit-appearance: none;
+        }
+        
+        .form-group select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ccc'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px;
+            padding-right: 35px;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            /* Taller textarea */
+            resize: vertical;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
+        }
+        
+        .image-upload-container {
+            border: 2px dashed rgba(255, 255, 255, 0.35);
+            /* Stronger border */
+            border-radius: 10px;
+            padding: 25px;
+            /* More padding */
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .image-upload-container:hover {
+            border-color: var(--accent);
+            background: rgba(0, 173, 181, 0.15);
+            /* Stronger hover effect */
+        }
+        
+        .image-upload-container input {
+            display: none;
+        }
+        
+        .upload-icon {
+            font-size: 45px;
+            /* Larger icon */
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 250px;
+            /* Taller preview */
+            margin-top: 20px;
+            /* More margin */
+            border-radius: 10px;
+            display: none;
+            object-fit: contain;
+            /* Ensure image fits */
+            border: 1px solid var(--border-color);
+        }
+        
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            /* More margin */
+        }
+        
+        .btn-submit,
+        .btn-cancel {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-submit {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+        }
+        
+        .btn-submit:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-cancel {
+            background: var(--gray);
+            color: white;
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2);
+        }
+        
+        .btn-cancel:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+        }
+        /* Login Modal */
+        
+        .login-modal {
+            z-index: 3000;
+        }
+        
+        .login-container {
+            max-width: 420px;
+            /* Slightly narrower for login */
+            padding: 40px;
+        }
+        
+        .login-info-text {
+            text-align: center;
+            margin-top: 25px;
+            color: var(--text-color-dim);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .login-info-text strong {
+            color: var(--primary);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            /* Slightly closer to top */
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-color-dim);
+            font-size: 28px;
+            /* Larger icon */
+            cursor: pointer;
+            width: 45px;
+            /* Larger hit area */
+            height: 45px;
+            /* Larger hit area */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.15);
+            /* Stronger hover effect */
+            color: var(--light);
+            transform: rotate(90deg);
+        }
+        /* Item Detail Modal */
+        
+        .item-modal {
+            z-index: 2100;
+        }
+        
+        .item-modal-content {
+            background: var(--modal-bg);
+            border-radius: 20px;
+            width: 95%;
+            max-width: 900px;
+            /* Wider for details */
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 40px;
+            position: relative;
+            border: 2px solid var(--accent);
+            /* Accent border */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            transform: translateY(-30px);
+            /* Start slightly up for animation */
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        
+        .item-modal.active .item-modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .item-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            /* More margin */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 20px;
+            flex-wrap: wrap;
+            /* Allow wrapping */
+            gap: 15px;
+            /* Gap for wrapped items */
+        }
+        
+        .item-modal-header .card-badge {
+            /* Specific styling for modal badge */
+            position: static;
+            margin: 0;
+            box-shadow: none;
+        }
+        
+        .item-modal-header h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 30px;
+            /* Larger font */
+            color: var(--primary);
+            text-align: left;
+            /* Align left */
+            margin-bottom: 0;
+            /* Remove default margin */
+            flex-grow: 1;
+            /* Allow title to take available space */
+        }
+        
+        .item-modal-body {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            /* Image slightly larger */
+            gap: 35px;
+            /* Increased gap */
+        }
+        
+        .item-modal-image {
+            border-radius: 15px;
+            overflow: hidden;
+            height: 350px;
+            /* Taller image */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .item-modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .item-modal-details h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            /* Larger font */
+            margin-bottom: 18px;
+            color: var(--light);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+        
+        .item-modal-details p {
+            color: var(--text-color-dim);
+            margin-bottom: 25px;
+            /* More margin */
+            line-height: 1.7;
+            font-size: 16px;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            /* Better responsiveness */
+            gap: 18px;
+            /* Increased gap */
+            margin-bottom: 30px;
+            /* More margin */
+        }
+        
+        .detail-item-modal {
+            background: rgba(255, 255, 255, 0.08);
+            /* Stronger background */
+            padding: 18px;
+            /* More padding */
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .detail-item-modal .detail-label {
+            font-size: 13px;
+            /* Slightly larger */
+            color: #afafc7;
+            /* Lighter gray */
+            margin-bottom: 6px;
+        }
+        
+        .detail-item-modal .detail-value {
+            font-size: 18px;
+            /* Larger value font */
+            color: var(--accent);
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        .item-modal-price {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 42px;
+            /* Much larger price font */
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin: 30px 0 40px;
+            /* More margin */
+            letter-spacing: 1px;
+        }
+        /* --- Utility Classes --- */
+        
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        /* Responsive Design */
+        
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 20px;
+            }
+            .stock-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 18px;
+                /* Adjusted gap */
+            }
+            .nav-buttons {
+                width: 100%;
+                justify-content: center;
+                gap: 15px;
+            }
+            .telegram-contact,
+            .admin-login-btn {
+                flex-grow: 1;
+                /* Make buttons grow on small screens */
+                justify-content: center;
+            }
+            .hero {
+                padding: 60px 0;
+            }
+            .hero h2 {
+                font-size: 38px;
+            }
+            .hero p {
+                font-size: 17px;
+                padding: 0 15px;
+            }
+            .section-title h2 {
+                font-size: 32px;
+            }
+            .section-title p {
+                font-size: 15px;
+            }
+            .stock-filters {
+                gap: 10px;
+            }
+            .filter-btn {
+                font-size: 14px;
+                padding: 8px 18px;
+            }
+            .stock-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            .card-title {
+                font-size: 20px;
+            }
+            .card-description {
+                font-size: 14px;
+            }
+            .card-price {
+                font-size: 24px;
+            }
+            .btn-buy,
+            .btn-details {
+                font-size: 14px;
+                padding: 10px;
+            }
+            .card-details {
+                flex-wrap: wrap;
+                /* Allow details to wrap onto two lines if needed */
+            }
+            .detail-item {
+                flex-basis: 48%;
+                /* Two items per row */
+            }
+            .contact-section {
+                padding: 60px 0;
+            }
+            .contact-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+                margin-bottom: 20px;
+            }
+            .contact-info h3 {
+                font-size: 26px;
+            }
+            .contact-info p {
+                font-size: 15px;
+            }
+            .telegram-btn-large {
+                padding: 15px 30px;
+                font-size: 17px;
+            }
+            .admin-header {
+                flex-direction: column;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+            .admin-title {
+                margin: 0 auto;
+                font-size: 24px;
+            }
+            .logout-btn {
+                width: 100%;
+                justify-content: center;
+                margin-top: 15px;
+            }
+            .admin-actions {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            .admin-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            .form-container,
+            .login-container {
+                max-width: 90%;
+                padding: 30px;
+            }
+            .form-container h3,
+            .login-container h3 {
+                font-size: 22px;
+                margin-bottom: 25px;
+            }
+            .form-group label {
+                font-size: 14px;
+                margin-bottom: 8px;
+            }
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 12px;
+                font-size: 14px;
+            }
+            .form-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .btn-submit,
+            .btn-cancel {
+                font-size: 15px;
+            }
+            .item-modal-body {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            .item-modal-header h3 {
+                font-size: 26px;
+            }
+            .item-modal-price {
+                font-size: 36px;
+                margin: 25px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo h1 {
+                font-size: 24px;
+            }
+            .hero h2 {
+                font-size: 30px;
+            }
+            .telegram-contact,
+            .admin-login-btn {
+                padding: 10px 15px;
+                font-size: 13px;
+                gap: 5px;
+            }
+            .telegram-contact i,
+            .admin-login-btn i {
+                font-size: 16px;
+            }
+            .section-title h2 {
+                font-size: 28px;
+            }
+            .filter-btn {
+                padding: 7px 15px;
+                font-size: 13px;
+            }
+            .item-modal-header h3 {
+                font-size: 22px;
+            }
+            .item-modal-price {
+                font-size: 30px;
+            }
+            .footer-links {
+                flex-direction: column;
+            }
+            .footer-links a {
+                padding: 8px;
+            }
+            .copyright {
+                font-size: 13px;
+            }
+        }
+        /* Animations */
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Loading State */
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: var(--accent);
+        }
+        /* Toast Notification */
+        
+        .toast {
+            position: fixed;
+            top: 25px;
+            /* Slightly lower */
+            right: 25px;
+            padding: 15px 25px;
+            background: var(--success);
+            color: white;
+            border-radius: 10px;
+            z-index: 4000;
+            display: none;
+            animation: slideIn 0.4s ease forwards, fadeOut 0.4s ease 2.6s forwards;
+            /* Added fadeOut */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            font-weight: 500;
+        }
+        
+        .toast.error {
+            background: var(--danger);
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(120%);
+                /* More distance */
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+                /* Move slightly up as it fades */
+            }
+        }
+        /* Empty State */
+        
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            /* More padding */
+            color: var(--text-color-dim);
+            grid-column: 1 / -1;
+            /* Make empty state span all columns in grid */
+        }
+        
+        .empty-state i {
+            font-size: 70px;
+            /* Larger icon */
+            color: var(--accent);
+            margin-bottom: 25px;
+        }
+        
+        .empty-state h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            /* Larger font */
+            margin-bottom: 15px;
+            color: var(--text-color-light);
+        }
+        
+        .empty-state p {
+            font-size: 16px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Login Modal -->
+    <div class="form-overlay login-modal" id="loginModal">
+        <div class="login-container">
+            <button class="close-modal" aria-label="Close login modal" onclick="closeLoginModal()">&times;</button>
+            <h3><i class="fas fa-user-shield"></i> Admin Login</h3>
+            <div class="form-group">
+                <label for="adminPassword">Password</label>
+                <input type="password" id="adminPassword" placeholder="Enter admin password">
+            </div>
+            <div class="form-buttons">
+                <button class="btn-submit" onclick="loginAdmin()">Login</button>
+                <button class="btn-cancel" onclick="closeLoginModal()">Cancel</button>
+            </div>
+            <p class="login-info-text">
+                Need help? Contact support on Telegram.
+                <br>
+                <strong class="visually-hidden">Default password: ttik2020</strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content (Public View) -->
+    <div id="publicView">
+        <!-- Header -->
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <a href="#homeSection" class="logo" onclick="showHome()">
+                        <div class="logo-icon">ML</div>
+                        <h1>MLBB<span>Stock</span></h1>
+                    </a>
+                    <div class="nav-buttons">
+                        <a href="https://t.me/slivertik" class="telegram-contact" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-telegram-plane"></i>
+                            <span class="visually-hidden">Chat on </span>@slivertik
+                        </a>
+                        <button class="admin-login-btn" onclick="showLoginModal()">
+                            <i class="fas fa-lock"></i>
+                            Admin
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero" id="homeSection">
+            <div class="container">
+                <h2>Your Ultimate MLBB Account & Skin Marketplace</h2>
+                <p>Discover rare skins, premium accounts, and instant diamond top-ups. Secure and reliable transactions via Telegram – powered by trust.</p>
+                <a href="#contact" class="telegram-btn-large">
+                    <i class="fab fa-telegram-plane"></i> Start Your Trade Today
+                </a>
+            </div>
+        </section>
+
+        <!-- Stock Section -->
+        <section class="stock-section" id="stockSection">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Our Exclusive Stock</h2>
+                    <p>Explore a carefully curated selection of Mobile Legends: Bang Bang items.</p>
+                </div>
+
+                <div class="stock-filters">
+                    <button class="filter-btn active" onclick="filterStock('all', this)">All Items</button>
+                    <button class="filter-btn" onclick="filterStock('skins', this)">Skins</button>
+                    <button class="filter-btn" onclick="filterStock('accounts', this)">Accounts</button>
+                    <button class="filter-btn" onclick="filterStock('diamonds', this)">Diamonds</button>
+                    <button class="filter-btn" onclick="filterStock('rare', this)">Rare Items</button>
+                </div>
+
+                <div class="stock-grid" id="stockGrid">
+                    <!-- Stock items will be loaded here by JavaScript -->
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading items...
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact-section" id="contact">
+            <div class="container">
+                <div class="contact-info">
+                    <div class="contact-icon">
+                        <i class="fab fa-telegram-plane"></i>
+                    </div>
+                    <h3>Connect With Us on Telegram</h3>
+                    <p>For inquiries, purchases, or selling your items, reach out to our dedicated Telegram support. All transactions are handled securely and personally.</p>
+                    <a href="https://t.me/slivertik" class="telegram-btn-large" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-telegram-plane"></i> Message @slivertik Now
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <a href="#homeSection" class="logo" onclick="showHome()">
+                        <div class="logo-icon">ML</div>
+                        <h1>MLBB<span>Stock</span></h1>
+                    </a>
+                    <div class="footer-links">
+                        <a href="#homeSection" onclick="showHome()">Home</a>
+                        <a href="#stockSection" onclick="showStock()">Stock</a>
+                        <a href="#contact">Contact</a>
+                        <a href="#" onclick="showLoginModal()">Admin Access</a>
+                    </div>
+                    <div class="copyright">
+                        <p>&copy; 2023 MLBB Stock Marketplace. All rights reserved.</p>
+                        <p>This site is an independent marketplace and is not affiliated with Moonton or Mobile Legends: Bang Bang.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="container">
+            <div class="admin-header">
+                <div class="admin-title">
+                    <i class="fas fa-user-cog"></i>
+                    <h2>Admin Dashboard</h2>
+                </div>
+                <button class="logout-btn" onclick="logoutAdmin()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+
+            <div class="admin-actions">
+                <button class="admin-btn" onclick="showAddForm()">
+                    <i class="fas fa-plus-circle"></i>
+                    Add New Item
+                </button>
+                <button class="admin-btn" onclick="showEditForm()">
+                    <i class="fas fa-edit"></i>
+                    Edit Item
+                </button>
+                <button class="admin-btn delete" onclick="showDeleteForm()">
+                    <i class="fas fa-trash-alt"></i>
+                    Delete Item
+                </button>
+                <button class="admin-btn" onclick="showPublicView()">
+                    <i class="fas fa-eye"></i>
+                    View Public Site
+                </button>
+            </div>
+
+            <div class="stock-section">
+                <div class="section-title">
+                    <h2>Manage Stock Items</h2>
+                    <p>Click on any item to quickly edit or view its details.</p>
+                </div>
+
+                <div class="stock-grid" id="adminStockGrid">
+                    <!-- Admin stock items will be loaded here by JavaScript -->
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading items for admin...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Item Form Modal -->
+    <div class="form-overlay" id="itemFormOverlay">
+        <div class="form-container">
+            <button class="close-modal" aria-label="Close form" onclick="closeItemForm()">&times;</button>
+            <h3 id="formTitle"><i class="fas fa-box-open"></i> Add New Item</h3>
+
+            <form id="itemForm" onsubmit="saveItem(event)">
+                <input type="hidden" id="itemId">
+
+                <div class="form-group">
+                    <label for="itemTitle">Item Title <span style="color:var(--danger)">*</span></label>
+                    <input type="text" id="itemTitle" required placeholder="e.g., Legendary Gusion Skin">
+                </div>
+
+                <div class="form-group">
+                    <label for="itemCategory">Category <span style="color:var(--danger)">*</span></label>
+                    <select id="itemCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="skins">Skins</option>
+                        <option value="accounts">Accounts</option>
+                        <option value="diamonds">Diamonds</option>
+                        <option value="rare">Rare Items</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="itemHero">Hero / Type (e.g., Gusion, Multiple, All)</label>
+                    <input type="text" id="itemHero" placeholder="e.g., Gusion, Multiple, All">
+                </div>
+
+                <div class="form-group">
+                    <label for="itemRarity">Rarity (e.g., Epic, Legendary, Collector)</label>
+                    <select id="itemRarity">
+                        <option value="Common">Common</option>
+                        <option value="Epic">Epic</option>
+                        <option value="Legendary">Legendary</option>
+                        <option value="Mythic">Mythic</option>
+                        <option value="Collector">Collector</option>
+                        <option value="Exclusive">Exclusive</option>
+                        <option value="Limited">Limited</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="itemPrice">Price <span style="color:var(--danger)">*</span></label>
+                    <input type="text" id="itemPrice" required placeholder="e.g., $45.99">
+                </div>
+
+                <div class="form-group">
+                    <label for="itemStatus">Status</label>
+                    <select id="itemStatus">
+                        <option value="available">Available</option>
+                        <option value="sold">Sold</option>
+                        <option value="reserved">Reserved</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="itemDescription">Description <span style="color:var(--danger)">*</span></label>
+                    <textarea id="itemDescription" required placeholder="Describe the item in detail, including important features."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Item Image <span style="color:var(--danger)">*</span></label>
+                    <div class="image-upload-container" onclick="document.getElementById('imageUpload').click()">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <p>Click to upload image</p>
+                        <p style="font-size: 12px; color: #8a8aa3; margin-top: 5px;">Recommended: 400x300px or larger</p>
+                        <input type="file" id="imageUpload" accept="image/*" onchange="previewImage(event)">
+                    </div>
+                    <img id="imagePreview" class="image-preview" alt="Image preview">
+                    <input type="hidden" id="itemImage" required>
+                    <!-- Stores base64 string -->
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn-submit" id="submitBtn">Save Item</button>
+                    <button type="button" class="btn-cancel" onclick="closeItemForm()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Form Modal -->
+    <div class="form-overlay" id="deleteFormOverlay">
+        <div class="form-container">
+            <button class="close-modal" aria-label="Close delete form" onclick="closeDeleteForm()">&times;</button>
+            <h3><i class="fas fa-trash-alt"></i> Delete Item</h3>
+
+            <div class="form-group">
+                <label for="deleteItemSelect">Select Item to Delete</label>
+                <select id="deleteItemSelect">
+                    <!-- Items will be populated here by JavaScript -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="deleteConfirm">Type "DELETE" to confirm</label>
+                <input type="text" id="deleteConfirm" placeholder="Type DELETE here">
+            </div>
+
+            <div class="form-buttons">
+                <button class="btn-submit delete" onclick="confirmDelete()">Delete Item</button>
+                <button type="button" class="btn-cancel" onclick="closeDeleteForm()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Selection Form Modal -->
+    <div class="form-overlay" id="editFormOverlay">
+        <div class="form-container">
+            <button class="close-modal" aria-label="Close edit selection form" onclick="closeEditForm()">&times;</button>
+            <h3><i class="fas fa-edit"></i> Edit Item</h3>
+
+            <div class="form-group">
+                <label for="editItemSelect">Select Item to Edit</label>
+                <select id="editItemSelect">
+                    <!-- Items will be populated here by JavaScript -->
+                </select>
+            </div>
+
+            <div class="form-buttons">
+                <button class="btn-submit" onclick="loadItemForEdit()">Edit Selected Item</button>
+                <button type="button" class="btn-cancel" onclick="closeEditForm()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Item Detail Modal (Public View & Admin View) -->
+    <div class="form-overlay item-modal" id="itemModal">
+        <div class="item-modal-content">
+            <button class="close-modal" aria-label="Close item details modal" onclick="closeItemModal()">&times;</button>
+
+            <div class="item-modal-header">
+                <h3 id="modalItemTitle"></h3>
+                <div class="card-badge" id="modalItemBadge"></div>
+            </div>
+
+            <div class="item-modal-body">
+                <div class="item-modal-image">
+                    <img id="modalItemImage" src="" alt="Item Image">
+                </div>
+
+                <div class="item-modal-details">
+                    <h4>Item Overview</h4>
+                    <p id="modalItemDescription"></p>
+
+                    <div class="detail-grid">
+                        <div class="detail-item-modal">
+                            <div class="detail-label">Category</div>
+                            <div class="detail-value" id="modalItemCategory"></div>
+                        </div>
+                        <div class="detail-item-modal">
+                            <div class="detail-label">Hero / Type</div>
+                            <div class="detail-value" id="modalItemHero"></div>
+                        </div>
+                        <div class="detail-item-modal">
+                            <div class="detail-label">Rarity</div>
+                            <div class="detail-value" id="modalItemRarity"></div>
+                        </div>
+                        <div class="detail-item-modal">
+                            <div class="detail-label">Item ID</div>
+                            <div class="detail-value" id="modalItemId"></div>
+                        </div>
+                        <div class="detail-item-modal">
+                            <div class="detail-label">Current Status</div>
+                            <div class="detail-value" id="modalItemStatus"></div>
+                        </div>
+                    </div>
+
+                    <div class="item-modal-price" id="modalItemPrice"></div>
+
+                    <div style="text-align: center;">
+                        <a href="https://t.me/slivertik" class="telegram-btn-large" target="_blank" rel="noopener noreferrer" id="modalBuyButton">
+                            <i class="fab fa-telegram-plane"></i> Buy Now on Telegram
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+    <script>
+        // Default stock items with base64 placeholder images
+        // These images are SVG placeholders, in a real application you'd use actual images (PNG/JPG)
+        // converted to base64 or hosted externally.
+        const defaultStockItems = [{
+            id: 1,
+            title: "Legendary Gusion K'OF Skin",
+            category: "skins",
+            description: "Experience the electrifying power of Gusion with his coveted K'OF skin. Features exclusive effects, custom voicelines, and unique recall animations. A must-have for Gusion mains!",
+            hero: "Gusion",
+            rarity: "Legendary",
+            price: "$49.99",
+            status: "available",
+            image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzE2MjEzZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNDUlIiBmb250LWZhbWl5PSJBcmlhbCIgZm9udC1zaXplPSIzMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIwLjNlbSI+R1VTSU9OIEtPRjwvNnRleHQ+PHRleHQgeD0iNTAlIiB5PSI1NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzAwYWRiNSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TGVnZW5kYXJ5IFNraW48L3RleHQ+PC9zdmc+"
+        }, {
+            id: 2,
+            title: "Mythic Glory Account",
+            category: "accounts",
+            description: "A seasoned account with consistent Mythic Glory rank. Boasts a vast collection of heroes (120+) and over 350 skins, including several Collector, Legend, and Epic skins. High win rate guaranteed.",
+            hero: "Multiple",
+            rarity: "Mythic",
+            price: "$349.99",
+            status: "available",
+            image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzBlMjU0MSIvPjx0ZXh0IHg9IjUwJSIgeT0iNDUlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6PSIzMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIwLjNlbSI+TVlUSElDPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNTUlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6PSIxNiIgZmlsbD0iI2ZmNmIzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+R0xPUlkgQUNDT1VOVDwvdGV4dD48L3N2Zz4="
+        }, {
+            id: 3,
+            title: "5000 Diamonds Instant Top-up",
+            category: "diamonds",
+            description: "Get 5000 Mobile Legends Diamonds delivered instantly to your account. Perfect for purchasing new heroes, skins, or participating in events. Fast, secure, and reliable service for global servers.",
+            hero: "Any Hero",
+            rarity: "Common",
+            price: "$59.99",
+            status: "available",
+            image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzI0MjQzZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNDUlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6PSIzMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIwLjNlbSI+NTAwMDwvNnRleHQ+PHRleHQgeD0iNTAlIiB5PSI1NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzAwYWRiNSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RElBTU9ORFM8L3RleHQ+PC9zdmc+"
+        }, {
+            id: 4,
+            title: "Collector's Lunox Skin",
+            category: "skins",
+            description: "Limited-time Collector skin for Lunox, 'Eyes of Eternity'. Features stunning visual effects, exclusive skill animations, and a unique entrance. Elevate your Lunox gameplay.",
+            hero: "Lunox",
+            rarity: "Collector",
+            price: "$75.00",
+            status: "available",
+            image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzI4MGUyZiIvPjx0ZXh0IHg9IjUwJSIgeT0iNDUlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6PSIzMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIwLjNlbSI+TFVOT1g8L3RleHQ+PHRleHQgeD0iNTAlIiB5PSI1NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0iI2ZmY2EwNCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+Q09MTEVDVE9SOzwvdGV4dD48L3N2Zz4="
+        }, {
+            id: 5,
+            title: "Old Account with M1 Skins",
+            category: "rare",
+            description: "Extremely rare account featuring multiple skins from the M1 World Championship. Includes Alucard 'Obsidian Blade' and Harith 'Evos Legends'. A piece of MLBB history!",
+            hero: "Multiple",
+            rarity: "Exclusive",
+            price: "$500.00",
+            status: "reserved",
+            image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzcwMTAzYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNDUlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6PSIzMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIwLjNlbSI+TS0xPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNTUlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkVYSUNMIFJLUkUgU0tJTlM8L3RleHQ+PC9zdmc+"
+        }];
+
+        // --- GLOBAL VARIABLES & CONSTANTS ---
+        const STORAGE_KEY = 'mlbb_stock_items';
+        // Admin password should ideally be handled server-side or via a more secure mechanism.
+        // For a purely client-side static HTML, this is the only option, but note its insecurity.
+        const ADMIN_PASSWORD = 'ttik2020';
+        let isAdminLoggedIn = false;
+        let currentFilter = 'all';
+
+        // --- UTILITY FUNCTIONS ---
+
+        /**
+         * Safely retrieves items from localStorage.
+         * @returns {Array} An array of stock items, or an empty array if none found/error.
+         */
+        function getStockItems() {
+            try {
+                const items = localStorage.getItem(STORAGE_KEY);
+                return items ? JSON.parse(items) : [];
+            } catch (e) {
+                console.error("Error reading from localStorage:", e);
+                showToast("Failed to load data. Local storage might be corrupted.", true);
+                return [];
+            }
+        }
+
+        /**
+         * Saves an array of items to localStorage.
+         * @param {Array} items - The array of items to save.
+         */
+        function saveStockItems(items) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+            } catch (e) {
+                console.error("Error saving to localStorage:", e);
+                showToast("Failed to save data. Local storage might be full.", true);
+            }
+        }
+
+        /**
+         * Displays a toast notification.
+         * @param {string} message - The message to display.
+         * @param {boolean} isError - True if it's an error message, false otherwise.
+         */
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+
+            toast.textContent = message;
+            toast.className = 'toast'; // Reset classes
+            if (isError) {
+                toast.classList.add('error');
+            }
+            toast.style.display = 'block';
+
+            // Re-apply animation by resetting and adding classes
+            // This ensures the animation plays every time, even if element was already visible
+            void toast.offsetWidth; // Trigger reflow
+            toast.style.animation = 'none'; // Reset animation
+            void toast.offsetWidth; // Trigger reflow again
+            toast.style.animation = null; // Re-enable animation (from CSS)
+
+            // Note: The fadeOut animation is now part of the CSS for toast directly,
+            // handling hide automatically after a delay.
+        }
+
+        /**
+         * Adds an 'active' class to a modal overlay for animation, then displays it.
+         * @param {HTMLElement} modalElement - The modal overlay element.
+         */
+        function openModalWithAnimation(modalElement) {
+            if (!modalElement) return;
+            modalElement.style.display = 'flex';
+            // Use a short timeout to ensure the display change is rendered before adding the class
+            requestAnimationFrame(() => {
+                modalElement.classList.add('active');
+            });
+        }
+
+        /**
+         * Removes the 'active' class from a modal overlay for animation, then hides it.
+         * @param {HTMLElement} modalElement - The modal overlay element.
+         */
+        function closeModalWithAnimation(modalElement) {
+            if (!modalElement) return;
+            modalElement.classList.remove('active');
+            // Hide the modal after the animation completes
+            modalElement.addEventListener('transitionend', function handler() {
+                modalElement.style.display = 'none';
+                modalElement.removeEventListener('transitionend', handler);
+            }, {
+                once: true
+            });
+        }
+
+
+        // --- STOCK MANAGEMENT FUNCTIONS ---
+
+        /**
+         * Adds a new stock item.
+         * @param {object} item - The item object to add.
+         * @returns {object} The newly added item with an ID, or null on failure.
+         */
+        function addStockItem(item) {
+            const items = getStockItems();
+            const newItem = {
+                ...item,
+                id: Date.now() + Math.floor(Math.random() * 1000) // More robust ID for uniqueness
+            };
+            items.push(newItem);
+            saveStockItems(items);
+            return newItem;
+        }
+
+        /**
+         * Updates an existing stock item.
+         * @param {number} id - The ID of the item to update.
+         * @param {object} updatedItem - The partial item object with updated fields.
+         * @returns {boolean} True if updated, false otherwise.
+         */
+        function updateStockItem(id, updatedItem) {
+            const items = getStockItems();
+            const index = items.findIndex(item => item.id == id);
+            if (index !== -1) {
+                // Merge existing item with updated properties
+                items[index] = {...items[index],
+                    ...updatedItem
+                };
+                saveStockItems(items);
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * Deletes a stock item by ID.
+         * @param {number} id - The ID of the item to delete.
+         * @returns {boolean} True if deleted, false otherwise.
+         */
+        function deleteStockItem(id) {
+            const items = getStockItems();
+            const initialLength = items.length;
+            const filteredItems = items.filter(item => item.id != id);
+            saveStockItems(filteredItems);
+            return filteredItems.length !== initialLength; // Check if an item was actually removed
+        }
+
+        /**
+         * Retrieves a single stock item by ID.
+         * @param {number} id - The ID of the item to retrieve.
+         * @returns {object|undefined} The item object, or undefined if not found.
+         */
+        function getStockItem(id) {
+            const items = getStockItems();
+            return items.find(item => item.id == id);
+        }
+
+        // --- UI RENDERING FUNCTIONS ---
+
+        /**
+         * Renders stock items for the public view.
+         * @param {string} filter - The category to filter by ('all', 'skins', etc.).
+         */
+        function loadPublicStock(filter = 'all') {
+            const grid = document.getElementById('stockGrid');
+            if (!grid) return;
+
+            grid.innerHTML = `<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading items...</div>`;
+
+            setTimeout(() => { // Simulate network delay
+                        const items = getStockItems();
+                        let filteredItems = items;
+                        if (filter !== 'all') {
+                            filteredItems = items.filter(item => item.category === filter);
+                        }
+
+                        if (filteredItems.length === 0) {
+                            grid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-box-open"></i>
+                            <h3>No Items Found</h3>
+                            <p>There are no ${filter === 'all' ? '' : filter + ' '}items available at the moment. Please check back later!</p>
+                        </div>
+                    `;
+                            return;
+                        }
+
+                        grid.innerHTML = filteredItems.map(item => `
+                    <div class="stock-card ${item.category}" role="listitem" aria-labelledby="card-title-${item.id}">
+                        ${item.status === 'available' ?
+                            '<div class="card-badge">AVAILABLE</div>' :
+                            '<div class="card-badge" style="background: var(--danger);">SOLD</div>'
+                        }
+                        <div class="card-image">
+                            <img src="${item.image}" alt="${item.title}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzE2MjEzZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6PSIxNiIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TVBBQjMgSXRlbTwvYXJ0aWNlPjwvc3ZnPg=='">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title" id="card-title-${item.id}">${item.title}</h3>
+                            <p class="card-description">${item.description.substring(0, 100)}${item.description.length > 100 ? '...' : ''}</p>
+                            <div class="card-details">
+                                <div class="detail-item">
+                                    <div class="detail-label">Hero</div>
+                                    <div class="detail-value">${item.hero || 'N/A'}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Rarity</div>
+                                    <div class="detail-value">${item.rarity || 'N/A'}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Category</div>
+                                    <div class="detail-value">${item.category}</div>
+                                </div>
+                            </div>
+                            <div class="card-price">${item.price}</div>
+                            <div class="card-actions">
+                                ${item.status === 'available' ?
+                                    `<button class="btn-buy" onclick="showItemModal(${item.id})">
+                                        <i class="fas fa-shopping-cart"></i> Buy Now
+                                    </button>` :
+                                    `<button class="btn-buy" style="background: var(--gray);" disabled>
+                                        <i class="fas fa-times"></i> Sold Out
+                                    </button>`
+                                }
+                                <button class="btn-details" onclick="showItemModal(${item.id})">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }, 300); // Simulate network delay
+        }
+
+        /**
+         * Renders stock items for the admin panel.
+         */
+        function loadAdminStock() {
+            const grid = document.getElementById('adminStockGrid');
+            if (!grid) return;
+
+            grid.innerHTML = `<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading items for admin...</div>`;
+
+            setTimeout(() => { // Simulate network delay
+                const items = getStockItems();
+
+                if (items.length === 0) {
+                    grid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-box-open"></i>
+                            <h3>No Items Yet</h3>
+                            <p>It looks like your stock is empty. Use the "Add New Item" button to get started!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                grid.innerHTML = items.map(item => `
+                    <div class="stock-card ${item.category}" onclick="editItem(${item.id})" role="listitem">
+                        <div class="card-badge">ID: ${item.id}</div>
+                        <div class="card-image">
+                            <img src="${item.image}" alt="${item.title}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzE2MjEzZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6PSIxNiIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TVBBQjMgSXRlbTwvYXJ0aWNlPjwvc3ZnPg=='" loading="lazy">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">${item.title}</h3>
+                            <p class="card-description">Status: <span style="font-weight: 600; color: ${item.status === 'available' ? 'var(--success)' : 'var(--danger)'};">${item.status.toUpperCase()}</span></p>
+                            <div class="card-details">
+                                <div class="detail-item">
+                                    <div class="detail-label">Price</div>
+                                    <div class="detail-value">${item.price}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Category</div>
+                                    <div class="detail-value">${item.category}</div>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn-buy" onclick="event.stopPropagation(); editItem(${item.id});">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn-details" onclick="event.stopPropagation(); showItemModal(${item.id});">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }, 300); // Simulate network delay
+        }
+
+        /**
+         * Filters the public stock display.
+         * @param {string} category - The category to filter by.
+         * @param {HTMLElement} btn - The button element that was clicked.
+         */
+        function filterStock(category, btn) {
+            currentFilter = category;
+
+            // Update active filter button
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.classList.remove('active');
+            });
+            if (btn) {
+                btn.classList.add('active');
+            }
+
+            loadPublicStock(category);
+        }
+
+        /**
+         * Displays the item detail modal.
+         * @param {number} id - The ID of the item to display.
+         */
+        function showItemModal(id) {
+            const item = getStockItem(id);
+            if (!item) {
+                showToast("Item not found.", true);
+                return;
+            }
+
+            // Populate modal fields
+            document.getElementById('modalItemTitle').textContent = item.title;
+            document.getElementById('modalItemDescription').textContent = item.description;
+            document.getElementById('modalItemCategory').textContent = item.category;
+            document.getElementById('modalItemHero').textContent = item.hero || 'N/A';
+            document.getElementById('modalItemRarity').textContent = item.rarity || 'N/A';
+            document.getElementById('modalItemId').textContent = item.id;
+            document.getElementById('modalItemStatus').textContent = item.status.toUpperCase();
+            document.getElementById('modalItemPrice').textContent = item.price;
+            document.getElementById('modalItemImage').src = item.image;
+            document.getElementById('modalItemImage').alt = item.title;
+
+            const badge = document.getElementById('modalItemBadge');
+            badge.textContent = item.status === 'available' ? 'AVAILABLE' : item.status.toUpperCase();
+            badge.style.background = item.status === 'available' ? 'var(--primary)' : 'var(--danger)';
+
+            const buyButton = document.getElementById('modalBuyButton');
+            if (item.status !== 'available') {
+                buyButton.classList.add('disabled');
+                buyButton.style.pointerEvents = 'none';
+                buyButton.style.opacity = '0.6';
+                buyButton.textContent = 'Item is ' + item.status.toUpperCase();
+                buyButton.style.background = 'var(--gray)';
+            } else {
+                buyButton.classList.remove('disabled');
+                buyButton.style.pointerEvents = 'auto';
+                buyButton.style.opacity = '1';
+                buyButton.textContent = 'Buy Now on Telegram';
+                buyButton.style.background = '#0088cc'; // Telegram blue
+            }
+
+            openModalWithAnimation(document.getElementById('itemModal'));
+        }
+
+        /** Closes the item detail modal. */
+        function closeItemModal() {
+            closeModalWithAnimation(document.getElementById('itemModal'));
+        }
+
+        // --- ADMIN AUTHENTICATION ---
+
+        /** Checks and updates the UI based on admin login status. */
+        function checkAdminStatus() {
+            const adminPanel = document.getElementById('adminPanel');
+            const publicView = document.getElementById('publicView');
+            if (!adminPanel || !publicView) return;
+
+            if (isAdminLoggedIn) {
+                publicView.style.display = 'none';
+                adminPanel.style.display = 'block';
+                loadAdminStock(); // Always refresh admin stock when entering panel
+            } else {
+                adminPanel.style.display = 'none';
+                publicView.style.display = 'block';
+                loadPublicStock(currentFilter); // Refresh public stock when returning
+            }
+        }
+
+        /** Displays the admin login modal. */
+        function showLoginModal() {
+            openModalWithAnimation(document.getElementById('loginModal'));
+            document.getElementById('adminPassword').focus();
+        }
+
+        /** Closes the admin login modal. */
+        function closeLoginModal() {
+            closeModalWithAnimation(document.getElementById('loginModal'));
+            document.getElementById('adminPassword').value = '';
+        }
+
+        /** Handles admin login logic. */
+        function loginAdmin() {
+            const passwordInput = document.getElementById('adminPassword');
+            const password = passwordInput ? passwordInput.value : '';
+
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                showToast('Admin login successful!');
+                checkAdminStatus();
+                closeLoginModal();
+            } else {
+                showToast('Incorrect password!', true);
+                passwordInput.value = ''; // Clear password on failure
+                passwordInput.focus();
+            }
+        }
+
+        /** Handles admin logout logic. */
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            showToast('Logged out successfully');
+            checkAdminStatus();
+        }
+
+        /** Switches view from admin panel to public site. */
+        function showPublicView() {
+            isAdminLoggedIn = false; // Log out admin when explicitly going to public view
+            checkAdminStatus();
+        }
+
+        // --- ADMIN FORM FUNCTIONS ---
+
+        /** Prepares and displays the add item form. */
+        function showAddForm() {
+            const formTitle = document.getElementById('formTitle');
+            const itemForm = document.getElementById('itemForm');
+            const itemId = document.getElementById('itemId');
+            const imagePreview = document.getElementById('imagePreview');
+            const itemImageHiddenInput = document.getElementById('itemImage');
+            
+            if (formTitle && itemForm && itemId && imagePreview && itemImageHiddenInput) {
+                formTitle.innerHTML = '<i class="fas fa-box-open"></i> Add New Item';
+                itemForm.reset();
+                itemId.value = '';
+                imagePreview.src = '';
+                imagePreview.style.display = 'none';
+                itemImageHiddenInput.value = ''; // Clear hidden input value
+                document.getElementById('submitBtn').textContent = 'Add Item';
+                openModalWithAnimation(document.getElementById('itemFormOverlay'));
+            } else {
+                console.error("Missing elements for showAddForm");
+                showToast("UI elements missing for adding item.", true);
+            }
+        }
+
+        /** Prepares and displays the item selection form for editing. */
+        function showEditForm() {
+            const items = getStockItems();
+            const select = document.getElementById('editItemSelect');
+            if (select) {
+                select.innerHTML = '<option value="">Select an item to edit</option>' +
+                    items.map(item => `<option value="${item.id}">${item.title} (ID: ${item.id})</option>`).join('');
+                openModalWithAnimation(document.getElementById('editFormOverlay'));
+            } else {
+                 console.error("Missing editItemSelect element.");
+                showToast("UI elements missing for editing item.", true);
+            }
+        }
+
+        /** Closes the item selection form. */
+        function closeEditForm() {
+            closeModalWithAnimation(document.getElementById('editFormOverlay'));
+        }
+
+        /** Loads data into the item form for editing a selected item. */
+        function loadItemForEdit() {
+            const select = document.getElementById('editItemSelect');
+            if (!select) {
+                console.error("Edit item select element not found.");
+                showToast("Edit item UI missing.", true);
+                return;
+            }
+            const id = select.value;
+
+            if (!id) {
+                showToast('Please select an item to edit.', true);
+                return;
+            }
+
+            const item = getStockItem(id);
+            if (!item) {
+                showToast('Item not found for editing.', true);
+                return;
+            }
+
+            // Populate form fields
+            document.getElementById('formTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Item';
+            document.getElementById('itemId').value = item.id;
+            document.getElementById('itemTitle').value = item.title;
+            document.getElementById('itemCategory').value = item.category;
+            document.getElementById('itemHero').value = item.hero;
+            document.getElementById('itemRarity').value = item.rarity;
+            document.getElementById('itemPrice').value = item.price;
+            document.getElementById('itemStatus').value = item.status;
+            document.getElementById('itemDescription').value = item.description;
+            document.getElementById('itemImage').value = item.image; // Set the hidden input for base64
+
+            const preview = document.getElementById('imagePreview');
+            preview.src = item.image;
+            preview.style.display = 'block';
+            document.getElementById('submitBtn').textContent = 'Update Item';
+
+            closeEditForm(); // Close the selection modal
+            openModalWithAnimation(document.getElementById('itemFormOverlay')); // Open the edit form modal
+        }
+
+
+        /** Opens the item form for editing a specific item directly (e.g., from admin stock grid). */
+        function editItem(id) {
+            const item = getStockItem(id);
+            if (!item) {
+                showToast("Item not found for direct edit.", true);
+                return;
+            }
+             // Populate form fields directly
+            document.getElementById('formTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Item';
+            document.getElementById('itemId').value = item.id;
+            document.getElementById('itemTitle').value = item.title;
+            document.getElementById('itemCategory').value = item.category;
+            document.getElementById('itemHero').value = item.hero;
+            document.getElementById('itemRarity').value = item.rarity;
+            document.getElementById('itemPrice').value = item.price;
+            document.getElementById('itemStatus').value = item.status;
+            document.getElementById('itemDescription').value = item.description;
+            document.getElementById('itemImage').value = item.image;
+
+            const preview = document.getElementById('imagePreview');
+            preview.src = item.image;
+            preview.style.display = 'block';
+            document.getElementById('submitBtn').textContent = 'Update Item';
+            
+            openModalWithAnimation(document.getElementById('itemFormOverlay')); // Open the edit form modal
+        }
+
+        /** Closes the add/edit item form. */
+        function closeItemForm() {
+            closeModalWithAnimation(document.getElementById('itemFormOverlay'));
+            document.getElementById('imageUpload').value = ''; // Reset file input
+        }
+
+        /** Prepares and displays the delete item form. */
+        function showDeleteForm() {
+            const items = getStockItems();
+            const select = document.getElementById('deleteItemSelect');
+            if (select) {
+                select.innerHTML = '<option value="">Select an item to delete</option>' +
+                    items.map(item => `<option value="${item.id}">${item.title} (ID: ${item.id})</option>`).join('');
+                document.getElementById('deleteConfirm').value = ''; // Clear confirmation text
+                openModalWithAnimation(document.getElementById('deleteFormOverlay'));
+            } else {
+                console.error("Missing deleteItemSelect element.");
+                showToast("UI elements missing for deleting item.", true);
+            }
+        }
+
+        /** Closes the delete item form. */
+        function closeDeleteForm() {
+            closeModalWithAnimation(document.getElementById('deleteFormOverlay'));
+        }
+
+        /** Handles the confirmation and deletion of an item. */
+        function confirmDelete() {
+            const select = document.getElementById('deleteItemSelect');
+            const confirmTextInput = document.getElementById('deleteConfirm');
+            if (!select || !confirmTextInput) {
+                 console.error("Delete form elements not found.");
+                showToast("Delete item UI missing.", true);
+                return;
+            }
+
+            const id = select.value;
+            const confirmText = confirmTextInput.value;
+
+            if (!id) {
+                showToast('Please select an item to delete.', true);
+                return;
+            }
+
+            if (confirmText.toUpperCase() !== 'DELETE') { // Case-insensitive check for user convenience
+                showToast('Please type "DELETE" exactly to confirm.', true);
+                confirmTextInput.value = ''; // Clear incorrect input
+                confirmTextInput.focus();
+                return;
+            }
+
+            if (deleteStockItem(id)) {
+                showToast('Item deleted successfully!');
+                loadAdminStock(); // Refresh admin view
+                loadPublicStock(currentFilter); // Refresh public view
+                closeDeleteForm();
+            } else {
+                showToast('Failed to delete item.', true);
+            }
+        }
+
+        /**
+         * Previews an image selected in the file input and converts it to base64.
+         * @param {Event} event - The change event from the file input.
+         */
+        function previewImage(event) {
+            const input = event.target;
+            const preview = document.getElementById('imagePreview');
+            const itemImageHiddenInput = document.getElementById('itemImage');
+
+            if (!input || !preview || !itemImageHiddenInput) {
+                console.error("Image upload elements not found.");
+                showToast("Image upload UI missing.", true);
+                return;
+            }
+
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+
+                // Basic file type and size validation
+                if (!file.type.match('image.*')) {
+                    showToast('Only image files are allowed.', true);
+                    input.value = ''; // Clear problematic input
+                    preview.style.display = 'none';
+                    itemImageHiddenInput.value = '';
+                    return;
+                }
+                if (file.size > 2 * 1024 * 1024) { // 2MB limit
+                    showToast('Image size exceeds 2MB limit.', true);
+                    input.value = '';
+                    preview.style.display = 'none';
+                    itemImageHiddenInput.value = '';
+                    return;
+                }
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    itemImageHiddenInput.value = e.target.result; // Store base64 string
+                };
+
+                reader.onerror = function() {
+                    showToast("Error reading image file.", true);
+                    input.value = '';
+                    preview.style.display = 'none';
+                    itemImageHiddenInput.value = '';
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+                itemImageHiddenInput.value = '';
+            }
+        }
+
+        /**
+         * Handles the submission of the add/edit item form.
+         * @param {Event} event - The form submission event.
+         */
+        function saveItem(event) {
+            event.preventDefault(); // Prevent default form submission behavior
+
+            const itemId = document.getElementById('itemId').value;
+            const itemTitle = document.getElementById('itemTitle');
+            const itemCategory = document.getElementById('itemCategory');
+            const itemHero = document.getElementById('itemHero');
+            const itemRarity = document.getElementById('itemRarity');
+            const itemPrice = document.getElementById('itemPrice');
+            const itemStatus = document.getElementById('itemStatus');
+            const itemDescription = document.getElementById('itemDescription');
+            const itemImage = document.getElementById('itemImage'); // Hidden input for base64 string
+
+            // Form validation
+            if (!itemTitle.value || !itemCategory.value || !itemPrice.value || !itemDescription.value || !itemImage.value) {
+                showToast('Please fill in all required fields (marked with *) and upload an image.', true);
+                return;
+            }
+
+            const itemData = {
+                title: itemTitle.value,
+                category: itemCategory.value,
+                hero: itemHero.value || 'N/A', // Default to N/A if empty
+                rarity: itemRarity.value || 'Common', // Default to Common if empty
+                price: itemPrice.value,
+                status: itemStatus.value,
+                description: itemDescription.value,
+                image: itemImage.value // Base64 string
+            };
+
+            let success = false;
+            let message = '';
+
+            if (itemId) {
+                // Update existing item
+                success = updateStockItem(itemId, itemData);
+                message = success ? 'Item updated successfully!' : 'Failed to update item.';
+            } else {
+                // Add new item
+                addStockItem(itemData);
+                success = true; // addStockItem always succeeds or throws error earlier
+                message = 'Item added successfully!';
+            }
+
+            if (success) {
+                showToast(message);
+                closeItemForm();
+                loadAdminStock(); // Refresh admin list
+                loadPublicStock(currentFilter); // Refresh public list
+            } else {
+                showToast(message, true);
+            }
+        }
+
+        // --- NAVIGATION FUNCTIONS ---
+
+        /** Scrolls to the top of the page. */
+        function showHome() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /** Scrolls to the stock section. */
+        function showStock() {
+            const stockSection = document.getElementById('stockSection');
+            if (stockSection) {
+                stockSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        /** --- INITIALIZATION --- */
+
+        /** Initializes the application on page load. */
+        function initApp() {
+            // Load stock items from localStorage or use default if empty
+            if (getStockItems().length === 0) {
+                saveStockItems(defaultStockItems);
+            }
+            
+            // Check admin status and render appropriate view
+            checkAdminStatus();
+            
+            // Set up event listener for outside clicks to close modals.
+            window.onclick = function(event) {
+                const modals = ['loginModal', 'itemModal', 'itemFormOverlay', 'deleteFormOverlay', 'editFormOverlay'];
+                modals.forEach(modalId => {
+                    const modal = document.getElementById(modalId);
+                    if (modal && event.target === modal) {
+                        if (modalId === 'loginModal') closeLoginModal();
+                        else if (modalId === 'itemModal') closeItemModal();
+                        else if (modalId === 'itemFormOverlay') closeItemForm();
+                        else if (modalId === 'deleteFormOverlay') closeDeleteForm();
+                        else if (modalId === 'editFormOverlay') closeEditForm();
+                    }
+                });
+            };
+        }
+
+        // Attach initApp to DOMContentLoaded event
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+
+</html>
